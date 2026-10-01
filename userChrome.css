@@ -123,8 +123,8 @@
  */
 @media not (forced-colors) {
   :root {
-    /* spec: neutral gray scrollbar thumbs; native GTK scrollbars are
-       Firefox-rendered and skip this (noted above) */
+    /* spec: neutral gray scrollbar thumbs; native GTK scrollbars render
+       themselves and aren't reachable from chrome CSS (see header note) */
     scrollbar-color: light-dark(#bcbcc1, #55555b) transparent !important;
     /* kill the subdialog frame's drop shadow (consumed by .dialogBox) */
     --popup-box-shadow: none !important;
