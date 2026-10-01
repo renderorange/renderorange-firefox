@@ -1,0 +1,39 @@
+/* Renderorange — layers: 1 tokens / 2 shape / 3 chrome */
+/*
+ * Layer 1: grayscale design-token overrides.
+ *
+ * Firefox 157 defines these tokens in @layer blocks inside
+ * chrome://global/skin/design-system/tokens-shared.css and
+ * tokens-platform.css (see chrome/toolkit/skin/classic/global/design-system/).
+ * The browser additionally pushes theme-derived token values with
+ * !important through its dynamic theme machinery, so plain unlayered
+ * declarations LOSE; every override here needs !important to win
+ * (verified against 157.0: without it the computed value stays the
+ * system -moz-headerbar/ActiveCaption default).
+ *
+ * light-dark() resolves per the UI color-scheme (driven by
+ * ui.systemUsesDarkTheme), so both palettes come from one block.
+ */
+
+/* === Layer 1: grayscale token overrides === */
+
+:root {
+  --toolbox-background-color:                light-dark(#f0f0f2, #2a2a2e) !important;
+  --toolbox-background-color-inactive:       light-dark(#f0f0f2, #2a2a2e) !important;
+  --toolbox-text-color:                      light-dark(#2b2b2e, #e8e8ea) !important;
+  --toolbar-background-color:                light-dark(#f0f0f2, #2a2a2e) !important;
+  --toolbar-text-color:                      light-dark(#2b2b2e, #e8e8ea) !important;
+  --tab-background-color-hover:              light-dark(#e4e4e7, #3a3a3f) !important;
+  --tab-background-color-selected:           light-dark(#e8e8ea, #424247) !important;
+  --toolbarbutton-background-color-hover:    light-dark(#e4e4e7, #3a3a3f) !important;
+  --toolbarbutton-background-color-active:   light-dark(#d8d8dc, #4a4a4f) !important;
+  --toolbar-field-background-color:          light-dark(#fafafa, #38383d) !important;
+  --toolbar-field-background-color-focus:    light-dark(#ffffff, #424249) !important;
+  --toolbar-field-border-color:              light-dark(#d1d1d5, #4c4c51) !important;
+  --toolbar-field-border-color-focus:        light-dark(#8f8f9a, #9a9aa2) !important;
+  --toolbar-field-text-color:                light-dark(#2b2b2e, #e8e8ea) !important;
+  --toolbar-field-text-color-focus:          light-dark(#2b2b2e, #e8e8ea) !important;
+  --panel-background-color:                  light-dark(#e4e4e7, #3a3a3f) !important;
+  --tabs-navbar-separator-color:             light-dark(#d1d1d5, #4c4c51) !important;
+  --tabs-navbar-separator-style:             solid !important;
+}
