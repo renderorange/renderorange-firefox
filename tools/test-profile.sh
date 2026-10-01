@@ -16,7 +16,7 @@ mkdir -p "${PROFILE}/chrome"
   echo 'user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);'
   echo 'user_pref("browser.nova.enabled", true);'
   if [ "${DARK:-0}" = "1" ]; then
-    echo 'user_pref("ui.systemUsesDarkTheme", true);'
+    echo 'user_pref("ui.systemUsesDarkTheme", 1);'
   fi
 } > "${PROFILE}/user.js"
 
