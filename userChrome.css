@@ -40,3 +40,50 @@
     --tabs-navbar-separator-style:           solid !important;
   }
 }
+
+/* === Layer 2: square radii + shadow removal === */
+
+/*
+ * Firefox 157's Nova redesign styles every surface into 24px pills, floats
+ * the tab strip 6px off the toolbar, and soft-shadows the selected tab.
+ * This block pins renderorange's square-ish shapes instead: 4px buttons
+ * and tabs, 6px fields/panels, no shadows.
+ *
+ * Everything here is shape-only (radii/margins/shadows) — no literal colors —
+ * and reuses the @media not (forced-colors) guard from layer 1 so Firefox's
+ * high-contrast styling keeps full control of geometry too (plan Review
+ * Focus row 6). The !importants match the layer-1 pattern: Firefox's theme
+ * machinery pushes these tokens with importance, so plain declarations lose.
+ */
+@media not (forced-colors) {
+  :root {
+    /* kill Nova's 24px pill; spec wants 4px buttons */
+    --button-border-radius:              4px  !important;
+    /* kill Nova's 24px pill on toolbar buttons (back/forward/new-tab hover) */
+    --toolbarbutton-border-radius:       4px  !important;
+    /* kill Nova's 24px all-corner tab radius; spec wants 4px */
+    --tab-border-radius:                 4px  !important;
+    /* kill Nova's 24px pill; spec wants a 6px urlbar field */
+    --urlbar-border-radius:              6px  !important;
+    /* spec: 6px popups (layer 3 builds on this) */
+    --popup-border-radius:               6px  !important;
+    /* spec: 6px panels (layer 3 builds on this) */
+    --panel-border-radius:               6px  !important;
+    /* kill Nova's soft drop shadow on the selected tab; spec: no shadows */
+    --tab-box-shadow-selected:           none !important;
+    /* kill Nova's 6px float so tabs sit flush on the strip */
+    --tab-margin-block:                  0    !important;
+  }
+
+  /* spec: tabs get 4px on the TOP corners only and sit flush on the strip;
+     with --tab-border-radius alone Nova rounds all four corners */
+  .tab-background {
+    border-radius: 4px 4px 0 0 !important;
+  }
+
+  /* Nova dropped the hairline under the toolbox; re-add it so the toolbar
+     block reads as a finished edge above the content area */
+  #navigator-toolbox {
+    border-bottom: 1px solid var(--tabs-navbar-separator-color) !important;
+  }
+}
