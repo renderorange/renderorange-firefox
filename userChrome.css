@@ -201,4 +201,14 @@
   .toolbarbutton-badge.feature-callout {
     filter: grayscale(1) !important;
   }
+
+  /* marionette/remote-debug sessions paint Firefox's robot mascot at the
+     start of the URL bar (static-robot.png, brand red/orange/yellow); like
+     the callout badge above, desaturate it so no accent can land in the
+     chrome (task-5 review: #BD0B2D-family pixels found in the urlbar).
+     Tab/site favicons are webpage content, not chrome: they stay colored
+     on purpose and are out of scope like the rest of page content. */
+  #remote-control-icon {
+    filter: grayscale(1) !important;
+  }
 }

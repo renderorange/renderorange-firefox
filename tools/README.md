@@ -22,10 +22,15 @@ window — light and dark), engine-computed styles checked on fresh profiles.
    areas.** Pass — every covered surface paints in palette hexes: toolbar/tab
    strip `#f0f0f2`/`#2a2a2e`, URL bar field `#fafafa`/`#38383d` (`#ffffff`/
    `#424249` focused), menus `#e4e4e7`/`#3a3a3f` with flat 1px borders, no drop
-   shadows, 4px/6px radii. One fix was made during the run: the fresh-profile
-   feature-callout dot on the unified extensions button painted blue
-   (`#00B1F3`, `badge-blue.svg`) and is now desaturated (`filter: grayscale`)
-   in layer 3 of `userChrome.css`; nothing else strayed from the palette.
+   shadows, 4px/6px radii. Two chrome accents were pinned grayscale in layer 3
+   of `userChrome.css`: the fresh-profile feature-callout dot on the unified
+   extensions button (`badge-blue.svg`, painted `#00B1F3`) and the URL-bar
+   robot glyph that Firefox paints in brand red/orange/yellow during
+   marionette/remote-debug sessions (`static-robot.png`, `#remote-control-icon`
+   → `filter: grayscale`). Site/tab favicons stay colored on purpose — they are
+   webpage content, not chrome, and are out of scope like all page content.
+   Everything else sweeps clean (channel-spread > 14 sweep over the chrome
+   band of both preview assets: only the 16×16 favicon flame, 191 px).
 2. **Both variants match the palette table exactly (pixel-sampled).** Pass —
    exact hexes measured: light strip `#F0F0F2`, field `#FAFAFA`, focused field
    `#FFFFFF`, focus ring `#8F8F9A`, menu bg `#E4E4E7`, menu border `#D1D1D5`,
