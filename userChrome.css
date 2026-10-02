@@ -193,4 +193,12 @@
   #sidebar {
     border-radius: 0 !important;
   }
+
+  /* fresh profiles paint a blue "feature callout" badge dot
+     (badge-blue.svg) on the unified extensions button; desaturate it so no
+     color accent ever lands in the chrome (final-suite carry-in: a #00B1F3
+     dot showed up in captures and is now grayscale) */
+  .toolbarbutton-badge.feature-callout {
+    filter: grayscale(1) !important;
+  }
 }
