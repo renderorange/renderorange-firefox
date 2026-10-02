@@ -144,6 +144,12 @@
     --color-accent-primary: light-dark(#2b2b2e, #e8e8ea) !important;
     --color-accent-primary-hover: light-dark(#5c5c61, #a3a3a8) !important;
     --color-accent-primary-active: light-dark(#8f8f9a, #d1d1d5) !important;
+    /* Nova-on defaults are identical (in light); these pins exist so that
+       nova-off + dark mode doesn't render white-on-white primary text. */
+    --button-text-color-primary: light-dark(#ffffff, #2b2b2e) !important;
+    --button-text-color-primary-hover: light-dark(#ffffff, #2b2b2e) !important;
+    --button-text-color-primary-active: light-dark(#ffffff, #2b2b2e) !important;
+    --button-text-color-primary-selected: light-dark(#ffffff, #2b2b2e) !important;
     /* focus rings anywhere must be the layer-1 focus gray (brief Step 3) */
     --focus-outline-color: light-dark(#8f8f9a, #9a9aa2) !important;
   }
