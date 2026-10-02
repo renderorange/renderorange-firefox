@@ -1,0 +1,220 @@
+/* Renderorange — layers: 1 tokens / 2 shape / 3 chrome */
+/*
+ * Layer 1: grayscale design-token overrides.
+ *
+ * Firefox 157 defines these tokens in @layer blocks inside
+ * chrome://global/skin/design-system/tokens-shared.css and
+ * tokens-platform.css (see chrome/toolkit/skin/classic/global/design-system/).
+ * The browser additionally pushes theme-derived token values with
+ * !important through its dynamic theme machinery, so plain unlayered
+ * declarations LOSE; every override here needs !important to win
+ * (verified against 157.0: without it the computed value stays the
+ * system -moz-headerbar/ActiveCaption default).
+ *
+ * light-dark() resolves per the UI color-scheme (driven by
+ * ui.systemUsesDarkTheme), so both palettes come from one block.
+ */
+
+/* === Layer 1: grayscale token overrides === */
+
+/* Firefox 157 pushes its design tokens with importance, hence !important here; the forced-colors guard preserves Firefox's high-contrast styling for accessibility users (plan Review Focus row 6). */
+@media not (forced-colors) {
+  :root {
+    --toolbox-background-color:              light-dark(#f0f0f2, #2a2a2e) !important;
+    --toolbox-background-color-inactive:     light-dark(#f0f0f2, #2a2a2e) !important;
+    --toolbox-text-color:                    light-dark(#2b2b2e, #e8e8ea) !important;
+    --toolbar-background-color:              light-dark(#f0f0f2, #2a2a2e) !important;
+    --toolbar-text-color:                    light-dark(#2b2b2e, #e8e8ea) !important;
+    --tab-background-color-hover:            light-dark(#e4e4e7, #3a3a3f) !important;
+    --tab-background-color-selected:         light-dark(#e8e8ea, #424247) !important;
+    --toolbarbutton-background-color-hover:  light-dark(#e4e4e7, #3a3a3f) !important;
+    --toolbarbutton-background-color-active: light-dark(#d8d8dc, #4a4a4f) !important;
+    --toolbar-field-background-color:        light-dark(#fafafa, #38383d) !important;
+    --toolbar-field-background-color-focus:  light-dark(#ffffff, #424249) !important;
+    --toolbar-field-border-color:            light-dark(#d1d1d5, #4c4c51) !important;
+    --toolbar-field-border-color-focus:      light-dark(#8f8f9a, #9a9aa2) !important;
+    --toolbar-field-text-color:              light-dark(#2b2b2e, #e8e8ea) !important;
+    --toolbar-field-text-color-focus:        light-dark(#2b2b2e, #e8e8ea) !important;
+    --panel-background-color:                light-dark(#e4e4e7, #3a3a3f) !important;
+    --tabs-navbar-separator-color:           light-dark(#d1d1d5, #4c4c51) !important;
+    --tabs-navbar-separator-style:           solid !important;
+  }
+}
+
+/* === Layer 2: square radii + shadow removal === */
+
+/*
+ * Firefox 157's Nova redesign styles every surface into 24px pills, floats
+ * the tab strip 6px off the toolbar, and soft-shadows the selected tab.
+ * This block pins renderorange's square-ish shapes instead: 4px buttons
+ * and tabs, 6px fields/panels, no shadows.
+ *
+ * Everything here is shape-only (radii/margins/shadows) — no literal colors —
+ * and reuses the @media not (forced-colors) guard from layer 1 so Firefox's
+ * high-contrast styling keeps full control of geometry too (plan Review
+ * Focus row 6). The !importants match the layer-1 pattern: Firefox's theme
+ * machinery pushes these tokens with importance, so plain declarations lose.
+ */
+@media not (forced-colors) {
+  :root {
+    /* kill Nova's 24px pill; spec wants 4px buttons */
+    --button-border-radius:              4px  !important;
+    /* kill Nova's 24px pill on toolbar buttons (back/forward/new-tab hover) */
+    --toolbarbutton-border-radius:       4px  !important;
+    /* kill Nova's 24px all-corner tab radius; spec wants 4px */
+    --tab-border-radius:                 4px  !important;
+    /* kill Nova's 24px pill; spec wants a 6px urlbar field */
+    --urlbar-border-radius:              6px  !important;
+    /* spec: 6px popups (layer 3 builds on this) */
+    --popup-border-radius:               6px  !important;
+    /* spec: 6px panels (layer 3 builds on this) */
+    --panel-border-radius:               6px  !important;
+    /* kill Nova's soft drop shadow on the selected tab; spec: no shadows */
+    --tab-box-shadow-selected:           none !important;
+    /* kill Nova's 6px float so tabs sit flush on the strip */
+    --tab-margin-block:                  0    !important;
+  }
+
+  /* spec: tabs get 4px on the TOP corners only and sit flush on the strip;
+     with --tab-border-radius alone Nova rounds all four corners */
+  .tab-background {
+    border-radius: 4px 4px 0 0 !important;
+  }
+
+  /* Nova dropped the hairline under the toolbox; re-add it so the toolbar
+     block reads as a finished edge above the content area */
+  #navigator-toolbox {
+    border-bottom: 1px solid var(--tabs-navbar-separator-color) !important;
+  }
+}
+
+/* === Layer 3: menus, popups, scrollbars, dialogs === */
+
+/*
+ * What this layer fixes (verified against 157.0 with browser.nova.enabled,
+ * light and dark, via engine-computed styles on live chrome):
+ *
+ * 1. Chrome scrollbars: with -moz-native-theme active on Linux, Firefox's
+ *    own theme token layer is disabled, so scrollbars fall back to GTK
+ *    colors. scrollbar-color pins the Firefox-rendered ones (sidebar trees,
+ *    panel subviews) to neutral grays. Native GTK scrollbars render
+ *    themselves and cannot be styled from chrome CSS — left alone on
+ *    purpose.
+ * 2. Menu/popup surfaces. Two problems compound here:
+ *    a. #appMenu-popup resolves --panel-background-color from the theme
+ *       push (grays OK), but context menus (menupopup) declare
+ *       --panel-background-color: Menu / --panel-text-color: MenuText at
+ *       element level (GTK), and extension popups get an inline white
+ *       --panel-background-color from Firefox. Those beat anything pinned
+ *       on :root, so the group is pinned again at element level.
+ *    b. Nova's foundation tokens leak violet: --panel-border-color comes
+ *       out as color-mix() over violet-tinted currentColor, panels carry
+ *       a 0 0 4px black drop shadow, and the hamburger's update banner
+ *       uses --promo-*-vibrant (violet bg + #271c48/#f5ecff text).
+ * 3. Dialogs: the subdialog frame (Clear Recent History etc.) renders with
+ *    --border-radius-medium (12px) and var(--popup-box-shadow) — pinned
+ *    to 6px and none like every other surface.
+ *
+ * The whole block is color-guarded behind not (forced-colors) like layers
+ * 1-2: the border/shadow/radius lines are shape-only and could legally live
+ * outside the guard, but keeping the layer in one guarded block preserves
+ * Firefox's high-contrast styling wholesale (plan Review Focus row 6) and
+ * matches the established file structure.
+ */
+@media not (forced-colors) {
+  :root {
+    /* spec: neutral gray scrollbar thumbs; native GTK scrollbars render
+       themselves and aren't reachable from chrome CSS (see header note) */
+    scrollbar-color: light-dark(#bcbcc1, #55555b) transparent !important;
+    /* kill the subdialog frame's drop shadow (consumed by .dialogBox) */
+    --popup-box-shadow: none !important;
+    /* sidebar shares the toolbox grays so the chrome reads as one block
+       (Nova's -moz-sidebar fallback is white light / #2b2b2b dark, GTK) */
+    --sidebar-background-color: light-dark(#f0f0f2, #2a2a2e) !important;
+    --sidebar-text-color: light-dark(#2b2b2e, #e8e8ea) !important;
+    /* subdialog and other embedded chrome documents resolve Nova's violet
+       --text-color (#180e30 light / #f2f0f8 dark) for labels and controls;
+       pin the spec text gray everywhere. Also feeds the color-mix()
+       deemphasized/disabled text derivations so they stay grayscale. */
+    --text-color: light-dark(#2b2b2e, #e8e8ea) !important;
+    /* dialogs: checked checkboxes, the primary button and the duration
+       menulist all take Nova's violet accent (#764edd light / #b89cff
+       dark) through --color-accent-primary. Pin it to palette grays so
+       every control reads grayscale. */
+    --color-accent-primary: light-dark(#2b2b2e, #e8e8ea) !important;
+    --color-accent-primary-hover: light-dark(#5c5c61, #a3a3a8) !important;
+    --color-accent-primary-active: light-dark(#8f8f9a, #d1d1d5) !important;
+    /* Nova-on defaults are identical (in light); these pins exist so that
+       nova-off + dark mode doesn't render white-on-white primary text. */
+    --button-text-color-primary: light-dark(#ffffff, #2b2b2e) !important;
+    --button-text-color-primary-hover: light-dark(#ffffff, #2b2b2e) !important;
+    --button-text-color-primary-active: light-dark(#ffffff, #2b2b2e) !important;
+    --button-text-color-primary-selected: light-dark(#ffffff, #2b2b2e) !important;
+    /* focus rings anywhere must be the layer-1 focus gray (brief Step 3) */
+    --focus-outline-color: light-dark(#8f8f9a, #9a9aa2) !important;
+  }
+
+  /* context menus + every popup/arrow panel: spec surface (#e4e4e7 /
+     #3a3a3f background, spec text, flat 1px divider-gray border, no drop
+     shadow). Element level because GTK system colors and Firefox's inline
+     overrides would beat :root tokens here. */
+  menupopup,
+  panel {
+    --panel-background-color: light-dark(#e4e4e7, #3a3a3f) !important;
+    --panel-text-color: light-dark(#2b2b2e, #e8e8ea) !important;
+    --panel-border-color: light-dark(#d1d1d5, #4c4c51) !important;
+    --panel-box-shadow: none !important;
+  }
+
+  /* Nova paints the hamburger's update banner in violet promo colors;
+     re-tone it to the palette. The promo tokens are pinned at #appMenu-popup
+     level (where Firefox declares them so they'd beat root pins), and the
+     banner's own element-level tokens get a second pin below.
+     Selected-tab grays keep the banner slightly visible on the panel. */
+  #appMenu-popup {
+    --promo-background-color-vibrant: light-dark(#e8e8ea, #424247) !important;
+    --promo-message-text-color-vibrant: light-dark(#2b2b2e, #e8e8ea) !important;
+    --promo-border-color-vibrant: light-dark(#d1d1d5, #4c4c51) !important;
+  }
+
+  /* The banner re-declares --panel-banner-item-background-color on the banner
+     element itself (light-dark(promo-vibrant, --background-color-information)),
+     which beats inherited values, so it is pinned again at that level —
+     otherwise dark mode substitutes violet #3e2976. */
+  #appMenu-popup .panel-banner-item,
+  #appMenu-popup .addon-banner-item {
+    --panel-banner-item-background-color: light-dark(#e8e8ea, #424247) !important;
+    --panel-banner-item-color: light-dark(#2b2b2e, #e8e8ea) !important;
+  }
+
+  /* subdialog frame: panels are 6px, dialogs should be too (Nova defaults
+     to --border-radius-medium = 12px); shadow already gone via
+     --popup-box-shadow above */
+  #window-modal-dialog .dialogBox {
+    border-radius: 6px !important;
+  }
+
+  /* the revamped sidebar (#sidebar) rounds its top end-corner 12px; the
+     sidebar sits flush at the window edge so it flattens to square */
+  #sidebar {
+    border-radius: 0 !important;
+  }
+
+  /* fresh profiles paint a blue "feature callout" badge dot
+     (badge-blue.svg) on the unified extensions button; desaturate it so no
+     color accent ever lands in the chrome (final-suite carry-in: a #00B1F3
+     dot showed up in captures and is now grayscale) */
+  .toolbarbutton-badge.feature-callout {
+    filter: grayscale(1) !important;
+  }
+
+  /* marionette/remote-debug sessions paint Firefox's robot mascot at the
+     start of the URL bar (static-robot.png, brand red/orange/yellow); like
+     the callout badge above, desaturate it so no accent can land in the
+     chrome (task-5 review: #BD0B2D-family pixels found in the urlbar).
+     Tab/site favicons are webpage content, not chrome: they stay colored
+     on purpose and are out of scope like the rest of page content. */
+  #remote-control-icon {
+    filter: grayscale(1) !important;
+  }
+}

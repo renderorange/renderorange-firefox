@@ -22,4 +22,8 @@ tags
 
 tmp
 .opencode
-docs/superpowers/
+docs/superpowers/*
+!docs/superpowers/specs/
+!docs/superpowers/plans/
+.worktrees/
+shots/
