@@ -29,6 +29,26 @@
     --tab-background-color-selected:         light-dark(#fafafa, #424247) !important;
     --toolbarbutton-background-color-hover:  light-dark(#e4e4e7, #3a3a3f) !important;
     --toolbarbutton-background-color-active: light-dark(#d8d8dc, #4a4a4f) !important;
+    /* Firefox 157's Nova token layers (tokens-foundation-nova and
+       tokens-browser-theme-nova in tokens-platform.css) also derive the generic
+       button, attention and icon colors from AccentColor (native path) or the
+       violet-desaturated palette (non-native path, e.g. --button-background-
+       color-hover: #d2c8ec / #75669f). The layer above pinned the toolbarbutton
+       aliases but not the --button-* originals those aliases point at, so violet
+       leaked through generic buttons, window controls and attention dots on the
+       non-native path (measured on an Ubuntu 157 build). Pin the originals to the
+       palette so no accent can land, and so the two paths agree. */
+    --button-background-color-hover:         light-dark(#e4e4e7, #3a3a3f) !important;
+    --button-background-color-active:        light-dark(#d8d8dc, #4a4a4f) !important;
+    --button-background-color-ghost-hover:   light-dark(#e4e4e7, #3a3a3f) !important;
+    --button-background-color-ghost-active:  light-dark(#d8d8dc, #4a4a4f) !important;
+    --color-accent-attention:                light-dark(#8f8f9a, #9a9aa2) !important;
+    --color-accent-primary-selected:         light-dark(#8f8f9a, #9a9aa2) !important;
+    --toolbarbutton-icon-fill:               light-dark(#2b2b2e, #e8e8ea) !important;
+    --toolbarbutton-icon-fill-attention:     light-dark(#2b2b2e, #e8e8ea) !important;
+    --toolbarbutton-icon-fill-attention-text: light-dark(#ffffff, #2b2b2e) !important;
+    --tab-attention-dot-color:               light-dark(#8f8f9a, #9a9aa2) !important;
+    --info-bar-border-color:                 light-dark(#d1d1d5, #4c4c51) !important;
     --toolbar-field-background-color:        light-dark(#fafafa, #38383d) !important;
     --toolbar-field-background-color-focus:  light-dark(#ffffff, #424249) !important;
     --toolbar-field-border-color:            light-dark(#d1d1d5, #4c4c51) !important;
@@ -47,6 +67,14 @@
        theme is off); retone it to the palette's hairline gray so the only
        ring the selected tab gets is a flat separator-colored edge. */
     --tab-border-color-accent:               light-dark(#d1d1d5, #4c4c51) !important;
+    /* Firefox 157 draws the selected-tab edge along two paths: the Nova gradient
+       border reads --tab-border-color-accent (above), while the ordinary outline
+       reads --tab-border-color-selected -- which 157 leaves unset outside
+       [lwtheme], so the outline computes to transparent and the selected tab has
+       no edge at all (measured: outline "1px solid rgba(0,0,0,0)"). Pin it to the
+       same hairline gray so the selected tab keeps its flat separator-colored
+       edge on every path, per the spec's "reconnected" tab strip. */
+    --tab-border-color-selected:             light-dark(#d1d1d5, #4c4c51) !important;
   }
 }
 
